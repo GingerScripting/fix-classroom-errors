@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.isd701.fixcertificates</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>sh</string>
+		<string>/usr/local/fixCertificates.sh</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/var/log/fixCertificatesErr.log</string>
+	<key>StandardOutPath</key>
+	<string>/var/log/fixCertificates.log</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>8</integer>
+	</dict>
+</dict>
+</plist>
