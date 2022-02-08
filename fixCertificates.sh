@@ -1,10 +1,5 @@
 #!/bin/bash
 
-#Adds users to an empty class in Jamf to force them to pull down a new version of the EDU profile
-#You must create an empty class in Jamf Pro
-#You must also create an advanced search for devices missing the leader certificate and note the ID number
-#Move this script to /usr/local and make sure it is executable to run it with the LaunchDaemon in this repo
-
 #Add your credentials and Jamf Pro URL here if you don't want to be prompted for them. This is also necessary if you are running the script as root (jamf or LaunchDaemon)
 jssUser=
 jssPassword=
@@ -29,6 +24,13 @@ if [ -z $jssPassword ]; then
 	read -r -s jssPassword
 fi
 
+#search number - you can fill in the search number here if you don't want to be prompted
+searchNumber=
+if [ -z $searchNumber ]; then
+	echo "Please enter the number of the advanced computer search you want to send the command to:"
+	read -r searchNumber
+fi 
+
 echo "Logging in to $jssURL as $jssUser"
 
 xpath() {
@@ -41,7 +43,7 @@ xpath() {
 }
 
 
-userNames=($(curl -X GET -H "Accept: application/xml" -s -u "${jssUser}":"${jssPassword}" ${jssURL}/JSSResource/advancedmobiledevicesearches/id/159 | xpath "//mobile_device//Username" 2> /dev/null | awk -F'</?Username>' '{for(i=2;i<=NF;i++) print $i}'))
+userNames=($(curl -X GET -H "Accept: application/xml" -s -u "${jssUser}":"${jssPassword}" ${jssURL}/JSSResource/advancedmobiledevicesearches/id/$searchNumber | xpath "//mobile_device//Username" 2> /dev/null | awk -F'</?Username>' '{for(i=2;i<=NF;i++) print $i}'))
 
 fixCertificate() {
 
@@ -53,5 +55,5 @@ sleep 10
 for name in "${userNames[@]}"; do
 #	echo "$name"
 	fixCertificate
-	echo "Certificate fixed on iPad assigned to $name"
+	echo "New EDU profile will be pulled down on iPad assigned to $name"
 done
